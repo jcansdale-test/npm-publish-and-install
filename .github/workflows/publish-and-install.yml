@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  PACKAGE_NAME: "@${{ github.repository }}"
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -12,7 +14,7 @@ jobs:
       run: |
         cat > package.json << EOM
         {
-          "name": "@${{ github.repository }}",
+          "name": "$PACKAGE_NAME",
           "version": "1.0.0-g${{ github.sha }}",
           "description": "",
           "main": "index.js",
@@ -36,7 +38,7 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         registry-url: 'https://npm.pkg.github.com'
-    - run: npm install @${{ github.repository }}@1.0.0-g${{ github.sha }}
+    - run: npm install $PACKAGE_NAME@1.0.0-g${{ github.sha }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
