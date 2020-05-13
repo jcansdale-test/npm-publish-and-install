@@ -1,0 +1,25 @@
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Generate package.json
+      run: |
+        cat > package.json << EOM
+        {
+          "name": "@jcansdale-test/npm-publish-test",
+          "version": "1.0.0",
+          "description": "",
+          "main": "index.js",
+          "author": "",
+          "license": "ISC"
+        }
+        EOM
+    - name: Build the package
+      run: npm pack
