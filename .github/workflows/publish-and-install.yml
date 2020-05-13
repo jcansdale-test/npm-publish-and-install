@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 env:
-  PACKAGE_NAME: "@${${{ github.repository }},,}" # lower-case
+  PACKAGE_NAME: "@${{ github.repository }}"
   PACKAGE_VERSION: "1.0.0-g${{ github.sha }}"
 
 jobs:
@@ -14,9 +14,10 @@ jobs:
     steps:
     - name: Generate package.json
       run: |
+        LOWERCASE_PACKAGE_NAME=${PACKAGE_NAME,,}
         cat > package.json << EOM
         {
-          "name": "$PACKAGE_NAME",
+          "name": "$LOWERCASE_PACKAGE_NAME",
           "version": "$PACKAGE_VERSION",
           "description": "",
           "main": "index.js",
@@ -40,7 +41,9 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         registry-url: 'https://npm.pkg.github.com'
-    - run: npm install $PACKAGE_NAME@$PACKAGE_VERSION
+    - run: |
+        LOWERCASE_PACKAGE_NAME=${PACKAGE_NAME,,}
+        npm install $LOWERCASE_PACKAGE_NAME@$PACKAGE_VERSION
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
