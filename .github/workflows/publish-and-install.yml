@@ -5,9 +5,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-
     steps:
     - name: Generate package.json
       run: |
@@ -29,3 +28,15 @@ jobs:
     - run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  install:
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-node@v1
+      with:
+        registry-url: 'https://npm.pkg.github.com'
+    - run: npm install @${{ github.repository }}@1.0.0-g${{ github.sha }}
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
