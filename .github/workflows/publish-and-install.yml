@@ -12,7 +12,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - name: Generate package.json
+    - name: generate package.json
       run: |
         LOWERCASE_PACKAGE_NAME=${PACKAGE_NAME,,}
         cat > package.json << EOM
@@ -25,8 +25,7 @@ jobs:
           "license": "ISC"
         }
         EOM
-    - name: Build the package
-      run: npm pack
+    - run: npm pack
     - uses: actions/setup-node@v1
       with:
         registry-url: 'https://npm.pkg.github.com'
@@ -41,7 +40,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         registry-url: 'https://npm.pkg.github.com'
-    - run: |
+    - name: npm install
+      run: |
         LOWERCASE_PACKAGE_NAME=${PACKAGE_NAME,,}
         npm install $LOWERCASE_PACKAGE_NAME@$PACKAGE_VERSION
       env:
